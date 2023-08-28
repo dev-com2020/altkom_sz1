@@ -13,12 +13,12 @@ public class Start{
 //        System.out.println(obj.name1);
 //        System.out.println(((E) obj).name1);
 
-        Person2 p1 = new Person2(10, "Jan");
-        System.out.println(p1);
-//        Person2 p2 = new Person2(-50, "Jan");
-//        System.out.println(p2);
-
-        System.out.println(p1.age());
+//        Person2 p1 = new Person2(10, "Jan");
+//        System.out.println(p1);
+////        Person2 p2 = new Person2(-50, "Jan");
+////        System.out.println(p2);
+//
+//        System.out.println(p1.age());
 
 
     }
