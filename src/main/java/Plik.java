@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 public class Plik {
     private static final String EXPECTED = "Expected";
-
     public static void main(String[] args) {
         try {
             Set<String> cities = new HashSet<>();
@@ -19,30 +18,29 @@ public class Plik {
             URL url = Plik.class.getClassLoader().getResource("input.csv");
             File file = new File(url.toURI());
             List<Person3> list = getInputPersonList(file);
-            list.stream().parallel().forEach(p -> {
+            list.stream().forEach(p -> {
                 cities.add(p.getCity());
                 states.add(p.getState());
                 zips.add(p.getZip());
                 int age = oldestByZip.getOrDefault(p.getZip(), 0);
-                if (p.getAge() > age) {
+                if(p.getAge() > age){
                     oldestByZip.put(p.getZip(), p.getAge());
                     oldestNameByZip.put(p.getZip(), p.getAge() + ": " + p.getName());
-                } else if (p.getAge() == age) {
+                } else if (p.getAge() == age){
                     oldestNameByZip.put(p.getZip(), oldestNameByZip.get(p.getZip()) + ", " + p.getName());
                 }
             });
-
             System.out.println("cities: " + cities.stream().sorted().collect(Collectors.joining(", ")));
             System.out.println("states: " + states.stream().sorted().collect(Collectors.joining(", ")));
             System.out.println("zips: " + zips.stream().sorted().map(i -> String.valueOf(i)).collect(Collectors.joining(", ")));
-            System.out.println("Oldest in each zip: " + oldestNameByZip.entrySet().stream().sorted(Map.Entry.comparingByKey()).map(e -> e.getKey() + ": " + e.getValue()).collect(Collectors.joining(", ")));
+            System.out.println("Oldest in each zip: " + oldestNameByZip.keySet().stream().sorted()
+                    .map(i -> i + "=>" + oldestNameByZip.get(i)).collect(Collectors.joining("; ")));
         } catch (Exception e) {
-            if (e.getMessage() != null && e.getMessage().startsWith(EXPECTED)) {
-                System.out.println("Input Error: " + e.getMessage());
+            if(e.getMessage() != null && e.getMessage().startsWith(EXPECTED)){
+                System.out.println("Input error. " + e.getMessage());
             } else {
                 e.printStackTrace();
             }
-
         }
     }
 
@@ -52,21 +50,22 @@ public class Plik {
                 .parallel()
                 .map(Plik::validLine)
                 .map(l -> {
-                    Person3 person = new Person3(Integer.parseInt(l.get(2)), l.get(1), l.get(0));
+                    Person3 person = new Person3(Integer.parseInt(l.get(2)), l.get(0), l.get(1));
                     person.setAddress(l.get(3), l.get(4), l.get(5), Integer.parseInt(l.get(6)));
                     return person;
                 }).toList();
     }
 
-    private static List<String> validLine(String line) {
+    private static List<String> validLine(String line){
         String[] arr = line.split(",");
-        if(arr.length != 7) {
-            throw new RuntimeException(EXPECTED + " 7 columns, found " + arr.length + " in line: " + line);
+        if(arr.length != 7){
+            throw new RuntimeException(EXPECTED + " 7 column: " + line);
         }
-        List<String> values = Arrays.stream(arr).parallel().map(s -> {
+
+        List<String> values = Arrays.stream(arr).map(s -> {
             String val = s.trim();
-            if (val.isEmpty()){
-                throw new RuntimeException(EXPECTED + " non-empty value, found empty in line: " + line);
+            if(val.isEmpty()){
+                throw new RuntimeException(EXPECTED + " only non-empty values: " + line);
             }
             return val;
         }).toList();
@@ -74,14 +73,12 @@ public class Plik {
         try {
             Integer.valueOf(values.get(2));
             Integer.valueOf(values.get(6));
-
         } catch (Exception e) {
-            throw new RuntimeException(EXPECTED + " integer value, found non-integer in line: " + line);
+            throw new RuntimeException(EXPECTED + " numbers in columns 3 and 7: " + line);
         }
-        if (values.get(6).length() != 5) {
-            throw new RuntimeException(EXPECTED + " 5 digit zip, found " + values.get(6).length() + " in line: " + line);
+        if(values.get(6).length() != 5){
+            throw new RuntimeException(EXPECTED + " zip code 5 digits only: " + line);
         }
         return values;
-
     }
 }
