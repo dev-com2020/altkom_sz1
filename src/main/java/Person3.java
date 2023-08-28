@@ -12,21 +12,8 @@ public class Person3 {
         return age;
     }
 
-
     public int getZip() {
         return zip;
-    }
-
-    public String getfName() {
-        return fName;
-    }
-
-    public String getlName() {
-        return lName;
-    }
-
-    public String getStreet() {
-        return street;
     }
 
     public String getCity() {
@@ -35,6 +22,10 @@ public class Person3 {
 
     public String getState() {
         return state;
+    }
+
+    public String getName() {
+        return fName + " " + lName;
     }
 
     public void setAddress(String street, String city, String state, int zip) {
