@@ -1,6 +1,8 @@
 public class SomeClass {
-    private int prop1;
+    int prop1;
     private String prop2;
+
+    public static String staticProp = "staticProp";
 
     public SomeClass(int prop1, String prop2) {
         this.prop1 = prop1;
